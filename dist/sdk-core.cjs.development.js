@@ -12,12 +12,12 @@ var toFormat = _interopDefault(require('toformat'));
 var address = require('@ethersproject/address');
 
 (function (ChainId) {
-  ChainId[ChainId["MAINNET"] = 100000] = "MAINNET";
-  ChainId[ChainId["ROPSTEN"] = 3200000] = "ROPSTEN";
-  ChainId[ChainId["RINKEBY"] = 400000] = "RINKEBY";
-  ChainId[ChainId["G\xD6RLI"] = 5980000] = "G\xD6RLI";
-  ChainId[ChainId["KOVAN"] = 4209888] = "KOVAN";
-  ChainId[ChainId["EVMOS"] = 432000] = "EVMOS";
+  ChainId[ChainId["MAINNET"] = 1] = "MAINNET";
+  ChainId[ChainId["ROPSTEN"] = 3] = "ROPSTEN";
+  ChainId[ChainId["RINKEBY"] = 4] = "RINKEBY";
+  ChainId[ChainId["G\xD6RLI"] = 5] = "G\xD6RLI";
+  ChainId[ChainId["KOVAN"] = 42] = "KOVAN";
+  ChainId[ChainId["EVMOS"] = 9001] = "EVMOS";
   ChainId[ChainId["EVMOS_TESTNET"] = 9000] = "EVMOS_TESTNET";
 })(exports.ChainId || (exports.ChainId = {}));
 (function (TradeType) {
