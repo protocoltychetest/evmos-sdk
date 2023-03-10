@@ -14,18 +14,15 @@ var address = require('@ethersproject/address');
 (function (ChainId) {
   ChainId[ChainId["EVMOS_TESTNET"] = 9000] = "EVMOS_TESTNET";
 })(exports.ChainId || (exports.ChainId = {}));
-
 (function (TradeType) {
   TradeType[TradeType["EXACT_INPUT"] = 0] = "EXACT_INPUT";
   TradeType[TradeType["EXACT_OUTPUT"] = 1] = "EXACT_OUTPUT";
 })(exports.TradeType || (exports.TradeType = {}));
-
 (function (Rounding) {
   Rounding[Rounding["ROUND_DOWN"] = 0] = "ROUND_DOWN";
   Rounding[Rounding["ROUND_HALF_UP"] = 1] = "ROUND_HALF_UP";
   Rounding[Rounding["ROUND_UP"] = 2] = "ROUND_UP";
 })(exports.Rounding || (exports.Rounding = {}));
-
 var MaxUint256 = /*#__PURE__*/JSBI.BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
 function _defineProperties(target, props) {
@@ -34,20 +31,42 @@ function _defineProperties(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
+    Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
   }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", {
+    writable: false
+  });
   return Constructor;
 }
-
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
+  _setPrototypeOf(subClass, superClass);
+}
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+  return _setPrototypeOf(o, p);
+}
+function _toPrimitive(input, hint) {
+  if (typeof input !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+  return typeof key === "symbol" ? key : String(key);
 }
 
 /**
@@ -70,7 +89,6 @@ function currencyEquals(currencyA, currencyB) {
  *
  * The only instance of the base class `Currency` is Ether.
  */
-
 var BaseCurrency =
 /**
  * Constructs an instance of the base class `Currency`. The only instance of the base class `Currency` is `Currency.ETHER`.
@@ -88,29 +106,24 @@ function BaseCurrency(decimals, symbol, name) {
 /**
  * Represents the currency Ether
  */
-
 var Ether = /*#__PURE__*/function (_BaseCurrency) {
   _inheritsLoose(Ether, _BaseCurrency);
-
   /**
    * Only called once by this class
    * @protected
    */
   function Ether() {
     var _this;
-
     _this = _BaseCurrency.call(this, 18, 'EVMOS', 'Evmos') || this;
     _this.isEther = true;
     _this.isToken = false;
     return _this;
   }
-
   return Ether;
 }(BaseCurrency);
 /**
  * The only instance of the class `Ether`.
  */
-
 Ether.ETHER = /*#__PURE__*/new Ether();
 var ETHER = Ether.ETHER;
 
@@ -124,80 +137,63 @@ var Fraction = /*#__PURE__*/function () {
     if (denominator === void 0) {
       denominator = JSBI.BigInt(1);
     }
-
     this.numerator = JSBI.BigInt(numerator);
     this.denominator = JSBI.BigInt(denominator);
   }
-
   Fraction.tryParseFraction = function tryParseFraction(fractionish) {
     if (fractionish instanceof JSBI || typeof fractionish === 'number' || typeof fractionish === 'string') return new Fraction(fractionish);
     if ('numerator' in fractionish && 'denominator' in fractionish) return fractionish;
     throw new Error('Could not parse fraction');
-  } // performs floor division
+  }
+  // performs floor division
   ;
-
   var _proto = Fraction.prototype;
-
   _proto.invert = function invert() {
     return new Fraction(this.denominator, this.numerator);
   };
-
   _proto.add = function add(other) {
     var otherParsed = Fraction.tryParseFraction(other);
-
     if (JSBI.equal(this.denominator, otherParsed.denominator)) {
       return new Fraction(JSBI.add(this.numerator, otherParsed.numerator), this.denominator);
     }
-
     return new Fraction(JSBI.add(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(otherParsed.numerator, this.denominator)), JSBI.multiply(this.denominator, otherParsed.denominator));
   };
-
   _proto.subtract = function subtract(other) {
     var otherParsed = Fraction.tryParseFraction(other);
-
     if (JSBI.equal(this.denominator, otherParsed.denominator)) {
       return new Fraction(JSBI.subtract(this.numerator, otherParsed.numerator), this.denominator);
     }
-
     return new Fraction(JSBI.subtract(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(otherParsed.numerator, this.denominator)), JSBI.multiply(this.denominator, otherParsed.denominator));
   };
-
   _proto.lessThan = function lessThan(other) {
     var otherParsed = Fraction.tryParseFraction(other);
     return JSBI.lessThan(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(otherParsed.numerator, this.denominator));
   };
-
   _proto.equalTo = function equalTo(other) {
     var otherParsed = Fraction.tryParseFraction(other);
     return JSBI.equal(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(otherParsed.numerator, this.denominator));
   };
-
   _proto.greaterThan = function greaterThan(other) {
     var otherParsed = Fraction.tryParseFraction(other);
     return JSBI.greaterThan(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(otherParsed.numerator, this.denominator));
   };
-
   _proto.multiply = function multiply(other) {
     var otherParsed = Fraction.tryParseFraction(other);
     return new Fraction(JSBI.multiply(this.numerator, otherParsed.numerator), JSBI.multiply(this.denominator, otherParsed.denominator));
   };
-
   _proto.divide = function divide(other) {
     var otherParsed = Fraction.tryParseFraction(other);
     return new Fraction(JSBI.multiply(this.numerator, otherParsed.denominator), JSBI.multiply(this.denominator, otherParsed.numerator));
   };
-
   _proto.toSignificant = function toSignificant(significantDigits, format, rounding) {
     if (format === void 0) {
       format = {
         groupSeparator: ''
       };
     }
-
     if (rounding === void 0) {
       rounding = exports.Rounding.ROUND_HALF_UP;
     }
-
     !Number.isInteger(significantDigits) ?  invariant(false, significantDigits + " is not an integer.")  : void 0;
     !(significantDigits > 0) ?  invariant(false, significantDigits + " is not positive.")  : void 0;
     Decimal.set({
@@ -207,18 +203,15 @@ var Fraction = /*#__PURE__*/function () {
     var quotient = new Decimal(this.numerator.toString()).div(this.denominator.toString()).toSignificantDigits(significantDigits);
     return quotient.toFormat(quotient.decimalPlaces(), format);
   };
-
   _proto.toFixed = function toFixed(decimalPlaces, format, rounding) {
     if (format === void 0) {
       format = {
         groupSeparator: ''
       };
     }
-
     if (rounding === void 0) {
       rounding = exports.Rounding.ROUND_HALF_UP;
     }
-
     !Number.isInteger(decimalPlaces) ?  invariant(false, decimalPlaces + " is not an integer.")  : void 0;
     !(decimalPlaces >= 0) ?  invariant(false, decimalPlaces + " is negative.")  : void 0;
     Big.DP = decimalPlaces;
@@ -227,15 +220,13 @@ var Fraction = /*#__PURE__*/function () {
   }
   /**
    * Helper method for converting any super class back to a fraction
-   */
-  ;
-
+   */;
   _createClass(Fraction, [{
     key: "quotient",
     get: function get() {
       return JSBI.divide(this.numerator, this.denominator);
-    } // remainder after floor division
-
+    }
+    // remainder after floor division
   }, {
     key: "remainder",
     get: function get() {
@@ -247,17 +238,14 @@ var Fraction = /*#__PURE__*/function () {
       return new Fraction(this.numerator, this.denominator);
     }
   }]);
-
   return Fraction;
 }();
 
 var Big$1 = /*#__PURE__*/toFormat(_Big);
 var CurrencyAmount = /*#__PURE__*/function (_Fraction) {
   _inheritsLoose(CurrencyAmount, _Fraction);
-
   function CurrencyAmount(currency, numerator, denominator) {
     var _this;
-
     _this = _Fraction.call(this, numerator, denominator) || this;
     !JSBI.lessThanOrEqual(_this.quotient, MaxUint256) ?  invariant(false, 'AMOUNT')  : void 0;
     _this.currency = currency;
@@ -269,8 +257,6 @@ var CurrencyAmount = /*#__PURE__*/function (_Fraction) {
    * @param currency the currency in the amount
    * @param rawAmount the raw token or ether amount
    */
-
-
   CurrencyAmount.fromRawAmount = function fromRawAmount(currency, rawAmount) {
     return new CurrencyAmount(currency, rawAmount);
   }
@@ -279,88 +265,64 @@ var CurrencyAmount = /*#__PURE__*/function (_Fraction) {
    * @param currency the currency
    * @param numerator the numerator of the fractional token amount
    * @param denominator the denominator of the fractional token amount
-   */
-  ;
-
+   */;
   CurrencyAmount.fromFractionalAmount = function fromFractionalAmount(currency, numerator, denominator) {
     return new CurrencyAmount(currency, numerator, denominator);
   }
   /**
    * Helper that calls the constructor with the ETHER currency
    * @param rawAmount ether amount in wei
-   */
-  ;
-
+   */;
   CurrencyAmount.ether = function ether(rawAmount) {
     return CurrencyAmount.fromRawAmount(Ether.ETHER, rawAmount);
   };
-
   var _proto = CurrencyAmount.prototype;
-
   _proto.add = function add(other) {
     !currencyEquals(this.currency, other.currency) ?  invariant(false, 'CURRENCY')  : void 0;
-
     var added = _Fraction.prototype.add.call(this, other);
-
     return CurrencyAmount.fromFractionalAmount(this.currency, added.numerator, added.denominator);
   };
-
   _proto.subtract = function subtract(other) {
     !currencyEquals(this.currency, other.currency) ?  invariant(false, 'CURRENCY')  : void 0;
-
     var subtracted = _Fraction.prototype.subtract.call(this, other);
-
     return CurrencyAmount.fromFractionalAmount(this.currency, subtracted.numerator, subtracted.denominator);
   };
-
   _proto.multiply = function multiply(other) {
     var multiplied = _Fraction.prototype.multiply.call(this, other);
-
     return CurrencyAmount.fromFractionalAmount(this.currency, multiplied.numerator, multiplied.denominator);
   };
-
   _proto.divide = function divide(other) {
     var divided = _Fraction.prototype.divide.call(this, other);
-
     return CurrencyAmount.fromFractionalAmount(this.currency, divided.numerator, divided.denominator);
   };
-
   _proto.toSignificant = function toSignificant(significantDigits, format, rounding) {
     if (significantDigits === void 0) {
       significantDigits = 6;
     }
-
     if (rounding === void 0) {
       rounding = exports.Rounding.ROUND_DOWN;
     }
-
     return _Fraction.prototype.divide.call(this, this.decimalScale).toSignificant(significantDigits, format, rounding);
   };
-
   _proto.toFixed = function toFixed(decimalPlaces, format, rounding) {
     if (decimalPlaces === void 0) {
       decimalPlaces = this.currency.decimals;
     }
-
     if (rounding === void 0) {
       rounding = exports.Rounding.ROUND_DOWN;
     }
-
     !(decimalPlaces <= this.currency.decimals) ?  invariant(false, 'DECIMALS')  : void 0;
     return _Fraction.prototype.divide.call(this, this.decimalScale).toFixed(decimalPlaces, format, rounding);
   };
-
   _proto.toExact = function toExact(format) {
     if (format === void 0) {
       format = {
         groupSeparator: ''
       };
     }
-
     Big$1.DP = this.currency.decimals;
     return new Big$1(this.quotient.toString()).div(this.decimalScale.toString()).toFormat(format);
   };
-
   return CurrencyAmount;
 }(Fraction);
 
@@ -369,70 +331,53 @@ var ONE_HUNDRED = /*#__PURE__*/new Fraction( /*#__PURE__*/JSBI.BigInt(100));
  * Converts a fraction to a percent
  * @param fraction the fraction to convert
  */
-
 function toPercent(fraction) {
   return new Percent(fraction.numerator, fraction.denominator);
 }
-
 var Percent = /*#__PURE__*/function (_Fraction) {
   _inheritsLoose(Percent, _Fraction);
-
   function Percent() {
     var _this;
-
     _this = _Fraction.apply(this, arguments) || this;
     /**
      * This boolean prevents a fraction from being interpreted as a Percent
      */
-
     _this.isPercent = true;
     return _this;
   }
-
   var _proto = Percent.prototype;
-
   _proto.add = function add(other) {
     return toPercent(_Fraction.prototype.add.call(this, other));
   };
-
   _proto.subtract = function subtract(other) {
     return toPercent(_Fraction.prototype.subtract.call(this, other));
   };
-
   _proto.multiply = function multiply(other) {
     return toPercent(_Fraction.prototype.multiply.call(this, other));
   };
-
   _proto.divide = function divide(other) {
     return toPercent(_Fraction.prototype.divide.call(this, other));
   };
-
   _proto.toSignificant = function toSignificant(significantDigits, format, rounding) {
     if (significantDigits === void 0) {
       significantDigits = 5;
     }
-
     return _Fraction.prototype.multiply.call(this, ONE_HUNDRED).toSignificant(significantDigits, format, rounding);
   };
-
   _proto.toFixed = function toFixed(decimalPlaces, format, rounding) {
     if (decimalPlaces === void 0) {
       decimalPlaces = 2;
     }
-
     return _Fraction.prototype.multiply.call(this, ONE_HUNDRED).toFixed(decimalPlaces, format, rounding);
   };
-
   return Percent;
 }(Fraction);
 
 var Price = /*#__PURE__*/function (_Fraction) {
   _inheritsLoose(Price, _Fraction);
-
   // denominator and numerator _must_ be raw, i.e. in the native representation
   function Price(baseCurrency, quoteCurrency, denominator, numerator) {
     var _this;
-
     _this = _Fraction.call(this, numerator, denominator) || this;
     _this.baseCurrency = baseCurrency;
     _this.quoteCurrency = quoteCurrency;
@@ -442,68 +387,50 @@ var Price = /*#__PURE__*/function (_Fraction) {
   /**
    * Flip the price, switching the base and quote currency
    */
-
-
   var _proto = Price.prototype;
-
   _proto.invert = function invert() {
     return new Price(this.quoteCurrency, this.baseCurrency, this.numerator, this.denominator);
   }
   /**
    * Multiply the price by another price, returning a new price. The other price must have the same base currency as this price's quote currency
    * @param other the other price
-   */
-  ;
-
+   */;
   _proto.multiply = function multiply(other) {
     !currencyEquals(this.quoteCurrency, other.baseCurrency) ?  invariant(false, 'TOKEN')  : void 0;
-
     var fraction = _Fraction.prototype.multiply.call(this, other);
-
     return new Price(this.baseCurrency, other.quoteCurrency, fraction.denominator, fraction.numerator);
   }
   /**
    * Return the amount of quote currency corresponding to a given amount of the base currency
    * @param currencyAmount the amount of base currency to quote against the price
-   */
-  ;
-
+   */;
   _proto.quote = function quote(currencyAmount) {
     !currencyEquals(currencyAmount.currency, this.baseCurrency) ?  invariant(false, 'TOKEN')  : void 0;
-
     var result = _Fraction.prototype.multiply.call(this, currencyAmount);
-
     return CurrencyAmount.fromFractionalAmount(this.quoteCurrency, result.numerator, result.denominator);
   }
   /**
    * Get the value scaled by decimals for formatting
    * @private
-   */
-  ;
-
+   */;
   _proto.toSignificant = function toSignificant(significantDigits, format, rounding) {
     if (significantDigits === void 0) {
       significantDigits = 6;
     }
-
     return this.adjustedForDecimals.toSignificant(significantDigits, format, rounding);
   };
-
   _proto.toFixed = function toFixed(decimalPlaces, format, rounding) {
     if (decimalPlaces === void 0) {
       decimalPlaces = 4;
     }
-
     return this.adjustedForDecimals.toFixed(decimalPlaces, format, rounding);
   };
-
   _createClass(Price, [{
     key: "adjustedForDecimals",
     get: function get() {
       return _Fraction.prototype.multiply.call(this, this.scalar);
     }
   }]);
-
   return Price;
 }(Fraction);
 
@@ -511,7 +438,6 @@ var Price = /*#__PURE__*/function (_Fraction) {
  * Validates an address and returns the parsed (checksummed) version of that address
  * @param address the unchecksummed hex address
  */
-
 function validateAndParseAddress(address$1) {
   try {
     return address.getAddress(address$1);
@@ -524,13 +450,10 @@ var _WETH;
 /**
  * Represents an ERC20 token with a unique address and some metadata.
  */
-
 var Token = /*#__PURE__*/function (_BaseCurrency) {
   _inheritsLoose(Token, _BaseCurrency);
-
   function Token(chainId, address, decimals, symbol, name) {
     var _this;
-
     _this = _BaseCurrency.call(this, decimals, symbol, name) || this;
     _this.isEther = false;
     _this.isToken = true;
@@ -542,16 +465,12 @@ var Token = /*#__PURE__*/function (_BaseCurrency) {
    * Returns true if the two tokens are equivalent, i.e. have the same chainId and address.
    * @param other other token to compare
    */
-
-
   var _proto = Token.prototype;
-
   _proto.equals = function equals(other) {
     // short circuit on reference equality
     if (this === other) {
       return true;
     }
-
     return this.chainId === other.chainId && this.address === other.address;
   }
   /**
@@ -559,18 +478,15 @@ var Token = /*#__PURE__*/function (_BaseCurrency) {
    * @param other other token to compare
    * @throws if the tokens have the same address
    * @throws if the tokens are on different chains
-   */
-  ;
-
+   */;
   _proto.sortsBefore = function sortsBefore(other) {
     !(this.chainId === other.chainId) ?  invariant(false, 'CHAIN_IDS')  : void 0;
     !(this.address !== other.address) ?  invariant(false, 'ADDRESSES')  : void 0;
     return this.address.toLowerCase() < other.address.toLowerCase();
   };
-
   return Token;
 }(BaseCurrency);
-var WETH9 = (_WETH = {}, _WETH[exports.ChainId.MAINNET] = /*#__PURE__*/new Token(exports.ChainId.MAINNET, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.ROPSTEN] = /*#__PURE__*/new Token(exports.ChainId.ROPSTEN, '0xc778417E063141139Fce010982780140Aa0cD5Ab', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.RINKEBY] = /*#__PURE__*/new Token(exports.ChainId.RINKEBY, '0xc778417E063141139Fce010982780140Aa0cD5Ab', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.GÖRLI] = /*#__PURE__*/new Token(exports.ChainId.GÖRLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.KOVAN] = /*#__PURE__*/new Token(exports.ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.EVMOS] = /*#__PURE__*/new Token(exports.ChainId.EVMOS, '0xD4949664cD82660AaE99bEdc034a0deA8A0bd517', 18, 'WETH9', 'Wrapped Ether'), _WETH[exports.ChainId.EVMOS_TESTNET] = /*#__PURE__*/new Token(exports.ChainId.EVMOS_TESTNET, '0xcc491f589B45d4a3C679016195B3FB87D7848210', 18, 'EVMOS', 'Evmos'), _WETH);
+var WETH9 = (_WETH = {}, _WETH[exports.ChainId.EVMOS_TESTNET] = /*#__PURE__*/new Token(exports.ChainId.EVMOS_TESTNET, '0xcc491f589B45d4a3C679016195B3FB87D7848210', 18, 'EVMOS', 'Evmos'), _WETH);
 
 /**
  * Returns the percent difference between the mid price and the execution price, i.e. price impact.
@@ -578,44 +494,39 @@ var WETH9 = (_WETH = {}, _WETH[exports.ChainId.MAINNET] = /*#__PURE__*/new Token
  * @param inputAmount the input amount of the trade
  * @param outputAmount the output amount of the trade
  */
-
 function computePriceImpact(midPrice, inputAmount, outputAmount) {
-  var quotedOutputAmount = midPrice.quote(inputAmount); // calculate price impact := (exactQuote - outputAmount) / exactQuote
-
+  var quotedOutputAmount = midPrice.quote(inputAmount);
+  // calculate price impact := (exactQuote - outputAmount) / exactQuote
   var priceImpact = quotedOutputAmount.subtract(outputAmount).divide(quotedOutputAmount);
   return new Percent(priceImpact.numerator, priceImpact.denominator);
 }
 
+// given an array of items sorted by `comparator`, insert an item into its sort index and constrain the size to
 // `maxSize` by removing the last item
-
 function sortedInsert(items, add, maxSize, comparator) {
-  !(maxSize > 0) ?  invariant(false, 'MAX_SIZE_ZERO')  : void 0; // this is an invariant because the interface cannot return multiple removed items if items.length exceeds maxSize
-
-  !(items.length <= maxSize) ?  invariant(false, 'ITEMS_SIZE')  : void 0; // short circuit first item add
-
+  !(maxSize > 0) ?  invariant(false, 'MAX_SIZE_ZERO')  : void 0;
+  // this is an invariant because the interface cannot return multiple removed items if items.length exceeds maxSize
+  !(items.length <= maxSize) ?  invariant(false, 'ITEMS_SIZE')  : void 0;
+  // short circuit first item add
   if (items.length === 0) {
     items.push(add);
     return null;
   } else {
-    var isFull = items.length === maxSize; // short circuit if full and the additional item does not come before the last item
-
+    var isFull = items.length === maxSize;
+    // short circuit if full and the additional item does not come before the last item
     if (isFull && comparator(items[items.length - 1], add) <= 0) {
       return add;
     }
-
     var lo = 0,
-        hi = items.length;
-
+      hi = items.length;
     while (lo < hi) {
       var mid = lo + hi >>> 1;
-
       if (comparator(items[mid], add) <= 0) {
         lo = mid + 1;
       } else {
         hi = mid;
       }
     }
-
     items.splice(lo, 0, add);
     return isFull ? items.pop() : null;
   }
@@ -629,24 +540,20 @@ var TWO = /*#__PURE__*/JSBI.BigInt(2);
  * Computes floor(sqrt(value))
  * @param value the value for which to compute the square root, rounded down
  */
-
 function sqrt(value) {
-  !JSBI.greaterThanOrEqual(value, ZERO) ?  invariant(false, 'NEGATIVE')  : void 0; // rely on built in sqrt if possible
-
+  !JSBI.greaterThanOrEqual(value, ZERO) ?  invariant(false, 'NEGATIVE')  : void 0;
+  // rely on built in sqrt if possible
   if (JSBI.lessThan(value, MAX_SAFE_INTEGER)) {
     return JSBI.BigInt(Math.floor(Math.sqrt(JSBI.toNumber(value))));
   }
-
   var z;
   var x;
   z = value;
   x = JSBI.add(JSBI.divide(value, TWO), ONE);
-
   while (JSBI.lessThan(x, z)) {
     z = x;
     x = JSBI.divide(JSBI.add(JSBI.divide(value, x), x), TWO);
   }
-
   return z;
 }
 
@@ -655,13 +562,11 @@ function sqrt(value) {
  * @param currency the currency to wrap, if necessary
  * @param chainId the ID of the chain for wrapping
  */
-
 function wrappedCurrency(currency, chainId) {
   if (currency.isToken) {
     !(currency.chainId === chainId) ?  invariant(false, 'CHAIN_ID')  : void 0;
     return currency;
   }
-
   if (currency.isEther) return WETH9[chainId];
   throw new Error('CURRENCY');
 }
@@ -671,7 +576,6 @@ function wrappedCurrency(currency, chainId) {
  * In other words, if the currency is ETHER, returns the WETH9 token amount for the given chain. Otherwise, returns
  * the input currency amount.
  */
-
 function wrappedCurrencyAmount(currencyAmount, chainId) {
   return CurrencyAmount.fromFractionalAmount(wrappedCurrency(currencyAmount.currency, chainId), currencyAmount.numerator, currencyAmount.denominator);
 }
