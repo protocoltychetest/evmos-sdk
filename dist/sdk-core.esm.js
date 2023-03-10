@@ -7,6 +7,12 @@ import { getAddress } from '@ethersproject/address';
 
 var ChainId;
 (function (ChainId) {
+  ChainId[ChainId["MAINNET"] = 100000] = "MAINNET";
+  ChainId[ChainId["ROPSTEN"] = 3200000] = "ROPSTEN";
+  ChainId[ChainId["RINKEBY"] = 400000] = "RINKEBY";
+  ChainId[ChainId["G\xD6RLI"] = 5980000] = "G\xD6RLI";
+  ChainId[ChainId["KOVAN"] = 4209888] = "KOVAN";
+  ChainId[ChainId["EVMOS"] = 432000] = "EVMOS";
   ChainId[ChainId["EVMOS_TESTNET"] = 9000] = "EVMOS_TESTNET";
 })(ChainId || (ChainId = {}));
 var TradeType;
@@ -483,7 +489,7 @@ var Token = /*#__PURE__*/function (_BaseCurrency) {
   };
   return Token;
 }(BaseCurrency);
-var WETH9 = (_WETH = {}, _WETH[ChainId.EVMOS_TESTNET] = /*#__PURE__*/new Token(ChainId.EVMOS_TESTNET, '0xcc491f589B45d4a3C679016195B3FB87D7848210', 18, 'EVMOS', 'Evmos'), _WETH);
+var WETH9 = (_WETH = {}, _WETH[ChainId.MAINNET] = /*#__PURE__*/new Token(ChainId.MAINNET, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.ROPSTEN] = /*#__PURE__*/new Token(ChainId.ROPSTEN, '0xc778417E063141139Fce010982780140Aa0cD5Ab', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.RINKEBY] = /*#__PURE__*/new Token(ChainId.RINKEBY, '0xc778417E063141139Fce010982780140Aa0cD5Ab', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.GÖRLI] = /*#__PURE__*/new Token(ChainId.GÖRLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.KOVAN] = /*#__PURE__*/new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.EVMOS] = /*#__PURE__*/new Token(ChainId.EVMOS, '0xD4949664cD82660AaE99bEdc034a0deA8A0bd517', 18, 'WETH9', 'Wrapped Ether'), _WETH[ChainId.EVMOS_TESTNET] = /*#__PURE__*/new Token(ChainId.EVMOS_TESTNET, '0xcc491f589B45d4a3C679016195B3FB87D7848210', 18, 'EVMOS', 'Evmos'), _WETH);
 
 /**
  * Returns the percent difference between the mid price and the execution price, i.e. price impact.
