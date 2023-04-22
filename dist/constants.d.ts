@@ -7,7 +7,9 @@ export declare enum ChainId {
     GÖRLI = 5,
     KOVAN = 42,
     EVMOS = 9001,
-    EVMOS_TESTNET = 9000
+    EVMOS_TESTNET = 9000,
+    ZKSYNC_TESTNET = 280,
+    ZKSYNC_MAINNET = 324
 }
 export declare enum TradeType {
     EXACT_INPUT = 0,
