@@ -12,7 +12,7 @@ export class Ether extends BaseCurrency {
    * @protected
    */
   protected constructor() {
-    super(18, 'EVMOS', 'Evmos')
+    super(18, 'ETH', 'Ether')
   }
 
   /**
